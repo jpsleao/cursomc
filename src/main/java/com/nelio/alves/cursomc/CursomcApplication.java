@@ -1,5 +1,6 @@
 package com.nelio.alves.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import com.nelio.alves.cursomc.dao.CidadeDao;
 import com.nelio.alves.cursomc.dao.ClienteDao;
 import com.nelio.alves.cursomc.dao.EnderecoDao;
 import com.nelio.alves.cursomc.dao.EstadoDao;
+import com.nelio.alves.cursomc.dao.PagamentoDao;
+import com.nelio.alves.cursomc.dao.PedidoDao;
 import com.nelio.alves.cursomc.dao.ProdutoDao;
 import com.nelio.alves.cursomc.domains.Categoria;
 import com.nelio.alves.cursomc.domains.Cidade;
 import com.nelio.alves.cursomc.domains.Cliente;
 import com.nelio.alves.cursomc.domains.Endereco;
 import com.nelio.alves.cursomc.domains.Estado;
+import com.nelio.alves.cursomc.domains.Pagamento;
+import com.nelio.alves.cursomc.domains.PagamentoBoleto;
+import com.nelio.alves.cursomc.domains.PagamentoCartao;
+import com.nelio.alves.cursomc.domains.Pedido;
 import com.nelio.alves.cursomc.domains.Produto;
+import com.nelio.alves.cursomc.domains.enums.EstadoPagamento;
 import com.nelio.alves.cursomc.domains.enums.TipoCliente;
 
 @SpringBootApplication
@@ -36,6 +44,10 @@ public class CursomcApplication implements CommandLineRunner {
 	private EnderecoDao enderecoDao;
 	@Autowired
 	private ClienteDao clienteDao;
+	@Autowired
+	private PagamentoDao pagamentoDao;
+	@Autowired
+	private PedidoDao pedidoDao;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -85,8 +97,20 @@ public class CursomcApplication implements CommandLineRunner {
 		clienteDao.saveAll(Arrays.asList(cli1));
 		enderecoDao.saveAll(Arrays.asList(e1,e2));
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
 		
+		Pagamento pagto1 = new PagamentoCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		Pagamento pagto2 = new PagamentoBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		ped2.setPagamento(pagto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1,ped2));
+		
+		pedidoDao.saveAll(Arrays.asList(ped1,ped2));
+		pagamentoDao.saveAll(Arrays.asList(pagto1,pagto2));
 		
 	}
 }
