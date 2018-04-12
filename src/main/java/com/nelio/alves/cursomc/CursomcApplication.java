@@ -13,6 +13,7 @@ import com.nelio.alves.cursomc.dao.CidadeDao;
 import com.nelio.alves.cursomc.dao.ClienteDao;
 import com.nelio.alves.cursomc.dao.EnderecoDao;
 import com.nelio.alves.cursomc.dao.EstadoDao;
+import com.nelio.alves.cursomc.dao.ItemPedidoDao;
 import com.nelio.alves.cursomc.dao.PagamentoDao;
 import com.nelio.alves.cursomc.dao.PedidoDao;
 import com.nelio.alves.cursomc.dao.ProdutoDao;
@@ -21,6 +22,7 @@ import com.nelio.alves.cursomc.domains.Cidade;
 import com.nelio.alves.cursomc.domains.Cliente;
 import com.nelio.alves.cursomc.domains.Endereco;
 import com.nelio.alves.cursomc.domains.Estado;
+import com.nelio.alves.cursomc.domains.ItemPedido;
 import com.nelio.alves.cursomc.domains.Pagamento;
 import com.nelio.alves.cursomc.domains.PagamentoBoleto;
 import com.nelio.alves.cursomc.domains.PagamentoCartao;
@@ -48,6 +50,8 @@ public class CursomcApplication implements CommandLineRunner {
 	private PagamentoDao pagamentoDao;
 	@Autowired
 	private PedidoDao pedidoDao;
+	@Autowired
+	private ItemPedidoDao itemPedidoDao;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -111,6 +115,19 @@ public class CursomcApplication implements CommandLineRunner {
 		
 		pedidoDao.saveAll(Arrays.asList(ped1,ped2));
 		pagamentoDao.saveAll(Arrays.asList(pagto1,pagto2));
+		
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.00, 1, 2000.00);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.00, 2, 80.00);
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+		
+		ped1.getItens().addAll(Arrays.asList(ip1,ip2));
+		ped2.getItens().addAll(Arrays.asList(ip3));
+		
+		p1.getItens().addAll(Arrays.asList(ip1));
+		p2.getItens().addAll(Arrays.asList(ip3));
+		p3.getItens().addAll(Arrays.asList(ip2));
+		
+		itemPedidoDao.saveAll(Arrays.asList(ip1,ip2,ip3));		
 		
 	}
 }
