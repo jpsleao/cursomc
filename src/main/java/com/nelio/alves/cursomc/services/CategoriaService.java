@@ -15,7 +15,7 @@ public class CategoriaService {
 	@Autowired
 	private CategoriaDao dao;
 	
-	public Categoria buscar(Integer id) {
+	public Categoria find(Integer id) {
 		Optional<Categoria> obj = dao.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));	   	
@@ -26,4 +26,8 @@ public class CategoriaService {
 		return dao.save(obj);
 	}
 
+	public Categoria update(Categoria obj) {
+		find(obj.getId());
+		return dao.save(obj);
+	}
 }
