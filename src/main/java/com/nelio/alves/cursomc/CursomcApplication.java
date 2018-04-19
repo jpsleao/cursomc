@@ -1,5 +1,6 @@
 package com.nelio.alves.cursomc;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
@@ -75,6 +76,13 @@ public class CursomcApplication implements CommandLineRunner {
 		
 		categoriaDao.saveAll(Arrays.asList(cat1,cat2));
 		produtoDao.saveAll(Arrays.asList(p1,p2,p3));
+		
+		DecimalFormat df = new DecimalFormat("000");
+		
+		for(Integer x=0; x<=100; x++) {
+			Categoria cat = new Categoria(null, "Categoria " + df.format(x));
+			categoriaDao.save(cat);			
+		}
 		
 		Estado est1 = new Estado(null,"Minas Gerais");
 		Estado est2 = new Estado(null,"São Paulo");
